@@ -1,0 +1,32 @@
+version: "3.8"
+
+services:
+  client:
+    container_name: newsletter-client
+    restart: always
+    build: ./client
+    ports:
+      - "8080:80"
+    volumes:
+      - ./client:/app
+      - /app/node_modules
+
+  server:
+    container_name: newsletter-server
+    build: ./server
+    environment:
+      - MONGO_URI=mongodb://mongo:27017
+    depends_on:
+      - mongo
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./server:/app
+      - /app/node_modules
+
+  mongo:
+    image: mongo
+    container_name: mongo
+    restart: always
+    ports:
+      - 27017:27017
