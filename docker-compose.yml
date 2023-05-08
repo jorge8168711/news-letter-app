@@ -28,8 +28,8 @@ services:
       context: ./server
       dockerfile: Dockerfile
     environment:
-      - MONGO_URI=mongodb://mongo:27017
-      - PORT=8000
+      MONGO_URL: "mongodb://mongo/newsletter"
+      PORT: 8000
     ports:
       - "8000:8000"
     depends_on:
@@ -44,3 +44,5 @@ services:
     restart: always
     ports:
       - 27017:27017
+    volumes:
+      - ./data:/data/db

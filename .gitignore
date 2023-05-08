@@ -75,3 +75,6 @@ typings/
 *.sw?
 
 *.pem
+/data
+
+thunder-tests
