@@ -8,22 +8,25 @@ services:
       context: ./client
       dockerfile: Dockerfile.dev
     ports:
-      - "8000:8000"
+      - "5173:5173"
+    environment:
+      VITE_API_BASE_URL: http://localhost:8000/api
     volumes:
       - ./client:/app
       - /app/node_modules
 
-  dev-server:
-    container_name: dev-newsletter-server
+  dev-api:
+    container_name: dev-newsletter-api
     build:
       context: ./server
       dockerfile: Dockerfile.dev
     environment:
       - MONGO_URI=mongodb://mongo:27017
+      - PORT=8000
+    ports:
+      - "8000:8000"
     depends_on:
       - dev-mongo
-    ports:
-      - "5000:5000"
     volumes:
       - ./server:/app
       - /app/node_modules

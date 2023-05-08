@@ -4,7 +4,7 @@ const cors = require('cors')
 const mongoose = require('mongoose')
 
 const app = express()
-const port = 5000
+const port = process.env.PORT || 8000
 
 mongoose.connect(process.env.MONGO_URI)
   .then((db) => `DB connected successfully to: ${db.connection.host}}}`)

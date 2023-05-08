@@ -1,25 +1,39 @@
 version: "3.8"
 
 services:
+  nginx:
+    depends_on:
+      - api
+      - client
+    restart: always
+    build:
+      dockerfile: Dockerfile
+      context: ./nginx
+    ports:
+      - "80:80"
+
   client:
     container_name: newsletter-client
     restart: always
-    build: ./client
-    ports:
-      - "80:80"
+    build:
+      dockerfile: Dockerfile
+      context: ./client
     volumes:
       - ./client:/app
       - /app/node_modules
 
-  server:
-    container_name: newsletter-server
-    build: ./server
+  api:
+    container_name: newsletter-api
+    build:
+      context: ./server
+      dockerfile: Dockerfile
     environment:
       - MONGO_URI=mongodb://mongo:27017
+      - PORT=8000
+    ports:
+      - "8000:8000"
     depends_on:
       - mongo
-    ports:
-      - "3000:5000"
     volumes:
       - ./server:/app
       - /app/node_modules
