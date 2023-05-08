@@ -7,7 +7,8 @@ function App() {
   const [count, setCount] = useState(0)
 
   useEffect(() => {
-    fetch('http://localhost:5000/api')
+    const baseUrl = import.meta.env.VITE_API_BASE_URL
+    fetch(baseUrl)
     .then((res) => {
       if (!res.ok) throw new Error('Network response was not ok')
       return res.json()
