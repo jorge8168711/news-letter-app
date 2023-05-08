@@ -1,30 +1,48 @@
-const store = require('./store')
+const Model = require('./model')
 
-function addSubscription (name, email) {
-  const body = {
-    name,
-    email,
-    created: new Date()
-  }
+function mapSubscription (sub) {
+  if (!sub) return null
 
-  if (!name || !email) {
-    console.error('[addSubscription] User or message not defined.')
-    throw new Error('The data is incorrect.')
-  }
-
-  return store.add(body)
+  const { _id: id, email, name, created } = sub
+  return { id, email, name, created }
 }
 
-function getSubscriptions () {
-  return store.list()
+async function existInDB (id) {
+  try {
+    const exist = await Model.exists({ _id: id })
+    return exist
+  } catch (error) {
+    console.error(error)
+    return error
+  }
 }
 
-function deleteSubscription (id) {
-  return store.delete(id)
+async function addSubscription (name, email) {
+  const modelResult = new Model({ name, email, created: new Date() })
+  const result = await modelResult.save()
+  return mapSubscription(result)
+}
+
+async function getSubscriptions () {
+  const modelResult = await Model.find()
+  return modelResult.map(mapSubscription)
+}
+
+async function getSubscriptionById (id) {
+  const modelResult = await Model.findOne({ _id: id })
+  return mapSubscription(modelResult)
+}
+
+async function deleteSubscription (id) {
+  const exist = await existInDB(id)
+  if (!exist) return null
+  await Model.deleteOne({ _id: id })
+  return id
 }
 
 module.exports = {
   addSubscription,
   getSubscriptions,
-  deleteSubscription
+  deleteSubscription,
+  getSubscriptionById
 }
