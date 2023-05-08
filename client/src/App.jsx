@@ -1,44 +1,55 @@
-import { useEffect, useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { Route, Routes } from 'react-router-dom'
+import { Progress } from '@chakra-ui/react'
+import { lazy, Suspense } from 'react'
+
+import Layout from './Layout'
+import NotFound from './NotFound'
+
+const Subscriptions = lazy(() => import('./Subscriptions'))
+const NewsLetters = lazy(() => import('./NewsLetters'))
 
 function App() {
-  const [count, setCount] = useState(0)
-
-  useEffect(() => {
-    const baseUrl = import.meta.env.VITE_API_BASE_URL || '/api'
-    fetch(baseUrl)
-    .then((res) => {
-      if (!res.ok) throw new Error('Network response was not ok')
-      return res.json()
-    })
-    .then((data) => console.log(data))
-  }, [])
-
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank" rel="noreferrer">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank" rel="noreferrer">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <Routes>
+      <Route
+        path="/"
+        element={<Layout />}>
+        <Route
+          index
+          element={
+            <Suspense
+              fallback={
+                <Progress
+                  size="sm"
+                  isIndeterminate
+                />
+              }>
+              <NewsLetters />
+            </Suspense>
+          }
+        />
+
+        <Route
+          path="newsletters"
+          element={
+            <Suspense
+              fallback={
+                <Progress
+                  size="sm"
+                  isIndeterminate
+                />
+              }>
+              <Subscriptions />
+            </Suspense>
+          }
+        />
+      </Route>
+
+      <Route
+        path="*"
+        element={<NotFound />}
+      />
+    </Routes>
   )
 }
 
