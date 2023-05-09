@@ -42,6 +42,19 @@ router.get('/:id', async (req, res) => {
   }
 })
 
+router.patch('/:id', async (req, res) => {
+  const baseData = { req, res }
+
+  try {
+    const newsletter = await controller.updateNewsLetter(req.params.id, { name: req.body.name, body: req.body.body })
+    if (!newsletter) throw new Error('The newsletter does not exist.')
+    response.success({ ...baseData, body: newsletter, status: OK })
+  } catch (error) {
+    const body = error.message || error
+    response.error({ ...baseData, body, status: NOT_FOUND, error })
+  }
+})
+
 router.delete('/:id', async (req, res) => {
   const baseData = { req, res }
 

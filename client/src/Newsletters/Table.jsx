@@ -1,7 +1,8 @@
 import {
+  Button,
   Flex,
+  IconButton,
   Table,
-  TableCaption,
   TableContainer,
   Tbody,
   Td,
@@ -14,10 +15,12 @@ import useSWR from 'swr'
 import Loader from '../Loader.jsx'
 import ErrorAlert from '../ErrorAlert.jsx'
 import DeleteButton from '../DeleteButton.jsx'
-import { API_BASE_URL, fetcher } from '../constants.js'
 
-export default function SubscriptionsTable() {
-  const { data, error, isLoading, mutate } = useSWR(`${API_BASE_URL}/subscriptions`, fetcher, {
+import { API_BASE_URL, fetcher } from '../constants.js'
+import { ArrowForwardIcon, EditIcon } from '@chakra-ui/icons'
+
+export default function NewsletterTable({ onTableSelection }) {
+  const { data, error, isLoading, mutate } = useSWR(`${API_BASE_URL}/newsletters`, fetcher, {
     refreshWhenHidden: true,
     revalidateOnMount: true,
   })
@@ -38,13 +41,10 @@ export default function SubscriptionsTable() {
   return (
     <TableContainer>
       <Table variant="simple">
-        <TableCaption>List of users subscribed to the newsletters.</TableCaption>
-
         <Thead>
           <Tr bgColor="rgba(255, 255, 255, .1)">
             <Th>Name</Th>
-            <Th>Email</Th>
-            <Th></Th>
+            <Th />
           </Tr>
         </Thead>
 
@@ -60,18 +60,31 @@ export default function SubscriptionsTable() {
           {data?.body?.map((item) => (
             <Tr key={item.id}>
               <Td>{item.name}</Td>
-              <Td>{item.email}</Td>
 
               <Td>
                 <Flex
                   justifyContent="flex-end"
                   alignItems="center"
                   gap={2}>
+                  <IconButton
+                    onClick={() => onTableSelection?.(item)}
+                    colorScheme="blue"
+                    size="sm"
+                    icon={<EditIcon />}
+                  />
+
                   <DeleteButton
                     onDeleteSuccess={() => mutate()}
-                    url="subscriptions"
+                    url="newsletters"
                     id={item.id}
                   />
+
+                  <Button
+                    size="sm"
+                    colorScheme="yellow"
+                    rightIcon={<ArrowForwardIcon />}>
+                    Submit newsletter
+                  </Button>
                 </Flex>
               </Td>
             </Tr>
@@ -80,4 +93,8 @@ export default function SubscriptionsTable() {
       </Table>
     </TableContainer>
   )
+}
+
+NewsletterTable.defaultProps = {
+  onTableSelection: () => {},
 }

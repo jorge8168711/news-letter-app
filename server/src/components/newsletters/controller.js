@@ -32,6 +32,12 @@ async function getNewsLetterById (id) {
   return mapNewsletter(modelResult)
 }
 
+async function updateNewsLetter (id, payload = {}) {
+  const modelResult = await Model.findOneAndUpdate({ _id: id }, payload, { new: true })
+  await modelResult.save()
+  return mapNewsletter(modelResult)
+}
+
 async function deleteNewsLetter (id) {
   const exist = await existInDB(id)
   if (!exist) return null
@@ -43,5 +49,6 @@ module.exports = {
   addNewsletter,
   getNewsLetters,
   getNewsLetterById,
-  deleteNewsLetter
+  deleteNewsLetter,
+  updateNewsLetter
 }

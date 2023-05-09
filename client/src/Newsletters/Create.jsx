@@ -13,18 +13,23 @@ import {
   FormErrorMessage,
   FormLabel,
   Input,
+  Textarea,
   useDisclosure,
   useToast,
 } from '@chakra-ui/react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 
 const defaultValues = {
-  select: '',
-  input: '',
+  name: '',
+  body: '',
 }
 
-export default function CreateSubscription({ afterCloseDrawerCallback }) {
+export default function CreateNewsletter({
+  afterCloseDrawerCallback,
+  cleanSelection,
+  selectedNewsletter,
+}) {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
@@ -42,29 +47,34 @@ export default function CreateSubscription({ afterCloseDrawerCallback }) {
   const onCloseDrawer = (createdItem = null) => {
     reset({ defaultValues })
     onClose()
-    afterCloseDrawerCallback?.(createdItem)
+    cleanSelection()
+    if (createdItem) {
+      afterCloseDrawerCallback?.(createdItem)
+    }
   }
 
   const onSubmit = async (data) => {
     try {
       const baseUrl = import.meta.env.VITE_API_BASE_URL || '/api'
+      const url = selectedNewsletter?.id
+        ? `${baseUrl}/newsletters/${selectedNewsletter.id}`
+        : `${baseUrl}/newsletters`
+      const method = selectedNewsletter?.id ? 'PATCH' : 'POST'
+
       setLoading(true)
 
-      const res = await fetch(`${baseUrl}/subscriptions`, {
-        method: 'POST',
+      const res = await fetch(url, {
+        method: method,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email: data.email,
-          name: data.name || data.email.split('@')[0],
-        }),
+        body: JSON.stringify(data),
       })
 
       const jsonRes = await res.json()
-      if (!res.ok) throw new Error(jsonRes.error || 'Something went wrong')
+      if (!res.ok) throw new Error(jsonRes.error || 'Something went wrong updating the news letter')
       onCloseDrawer(jsonRes.body)
 
       toast({
-        title: 'Email added successfully.',
+        title: 'Newsletter saved successfully.',
         status: 'success',
         duration: 5000,
         isClosable: true,
@@ -77,6 +87,13 @@ export default function CreateSubscription({ afterCloseDrawerCallback }) {
     }
   }
 
+  useEffect(() => {
+    if (!isOpen && selectedNewsletter) {
+      onOpen()
+      reset({ name: selectedNewsletter.name, body: selectedNewsletter.body })
+    }
+  }, [isOpen, selectedNewsletter, onOpen, reset])
+
   return (
     <div>
       <Box
@@ -85,46 +102,47 @@ export default function CreateSubscription({ afterCloseDrawerCallback }) {
         <Button
           colorScheme="orange"
           onClick={onOpen}>
-          Add Email
+          Add Newsletter
         </Button>
       </Box>
 
       <Drawer
+        size={'lg'}
         isOpen={isOpen}
         placement="right"
         onClose={onCloseDrawer}>
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
-          <DrawerHeader>Add a new email</DrawerHeader>
+          <DrawerHeader>Create newsletter</DrawerHeader>
 
           <DrawerBody>
             <form onSubmit={handleSubmit(onSubmit)}>
               <FormControl
-                isInvalid={Boolean(errors?.email?.message)}
+                isInvalid={Boolean(errors?.name?.message)}
                 mb={6}>
-                <FormLabel>Email</FormLabel>
-                <Input
-                  type="email"
-                  {...register('email', {
-                    required: 'The field is required',
-                    pattern: {
-                      value: /\S+@\S+\.\S+/,
-                      message: 'Entered value does not match email format',
-                    },
-                  })}
-                />
-                {errors?.email?.message && (
-                  <FormErrorMessage>{errors.email.message}</FormErrorMessage>
-                )}
-              </FormControl>
-
-              <FormControl>
                 <FormLabel>Name</FormLabel>
                 <Input
                   type="text"
-                  {...register('name')}
+                  {...register('name', {
+                    required: 'The field is required',
+                  })}
                 />
+                {errors?.name?.message && (
+                  <FormErrorMessage>{errors.name.message}</FormErrorMessage>
+                )}
+              </FormControl>
+
+              <FormControl isInvalid={Boolean(errors?.body?.message)}>
+                <FormLabel>Body</FormLabel>
+                <Textarea
+                  rows={8}
+                  type="text"
+                  {...register('body', { required: 'The field is required' })}
+                />
+                {errors?.body?.message && (
+                  <FormErrorMessage>{errors.body.message}</FormErrorMessage>
+                )}
               </FormControl>
 
               {error && (
@@ -143,7 +161,7 @@ export default function CreateSubscription({ afterCloseDrawerCallback }) {
                 <Button
                   isDisabled={loading}
                   type="button"
-                  onClick={onClose}
+                  onClick={onCloseDrawer}
                   variant="outline">
                   Cancel
                 </Button>
@@ -163,6 +181,8 @@ export default function CreateSubscription({ afterCloseDrawerCallback }) {
   )
 }
 
-CreateSubscription.defaultProps = {
+CreateNewsletter.defaultProps = {
   afterCloseDrawerCallback: () => {},
+  cleanSelection: () => {},
+  selectedNewsletter: null,
 }

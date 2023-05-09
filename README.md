@@ -51,11 +51,13 @@ On the root folder run the following:
   ```
 
 ### Frontend
-The app is running on development mode using the vite compiler.
+The app is running on production mode on the `http` port `80`
 
-`http://localhost:80/`
+`http://localhost`
 
 ### Server API
-The app is running on development mode using nodemon.
+The API node server is running on production mode on the following port
 
 `http://localhost:8000/`
+
+but is redirected to http://localhost/api
