@@ -15,7 +15,7 @@ import Loader from '../Loader.jsx'
 import ErrorAlert from '../ErrorAlert.jsx'
 
 export default function SubscriptionsTable() {
-  const { data, error, isLoading, mutate } = useSWR(`${API_BASE_URL}/aaa`, fetcher, {
+  const { data, error, isLoading, mutate } = useSWR(`${API_BASE_URL}/subscriptions`, fetcher, {
     refreshWhenHidden: true,
     revalidateOnMount: true,
   })
