@@ -92,7 +92,7 @@ export default function CreateSubscription({ afterCloseDrawerCallback }) {
 
           <DrawerBody>
             <form onSubmit={handleSubmit(onSubmit)}>
-              <FormControl isInvalid={Boolean(errors?.email?.message)}>
+              <FormControl isInvalid={Boolean(errors?.email?.message)} mb={6}>
                 <FormLabel>Email</FormLabel>
                 <Input
                   type="email"
