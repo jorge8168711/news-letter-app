@@ -90,6 +90,8 @@ export default function CreateSubscription({ afterCloseDrawerCallback }) {
       </Box>
 
       <Drawer
+        closeOnEsc={!loading}
+        closeOnOverlayClick={!loading}
         isOpen={isOpen}
         placement="right"
         onClose={onCloseDrawer}>

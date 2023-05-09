@@ -21,8 +21,12 @@ services:
       context: ./server
       dockerfile: Dockerfile.dev
     environment:
-      MONGO_URL: "mongodb://dev-mongo/newsletter"
+      MONGO_URL: "mongodb://dev-mongo/"
       PORT: 8000
+      S3_BUCKET_REGION: "us-east-1"
+      S3_BUCKET_NAME: "newsletter-s3-bucket"
+    env_file:
+      - .env
     ports:
       - "8000:8000"
     depends_on:

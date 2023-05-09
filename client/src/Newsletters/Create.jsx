@@ -17,7 +17,7 @@ import {
   useDisclosure,
   useToast,
 } from '@chakra-ui/react'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 
 const defaultValues = {
@@ -31,9 +31,12 @@ export default function CreateNewsletter({
   selectedNewsletter,
 }) {
   const { isOpen, onOpen, onClose } = useDisclosure()
+  const toast = useToast()
+  const fileInputRef = useRef(null)
+
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
-  const toast = useToast()
+  const [file, setFile] = useState(null)
 
   const {
     register,
@@ -51,6 +54,14 @@ export default function CreateNewsletter({
     if (createdItem) {
       afterCloseDrawerCallback?.(createdItem)
     }
+
+    if (fileInputRef.current) {
+      fileInputRef.current.value = null
+    }
+  }
+
+  const handleFileChange = (e) => {
+    setFile(e.target.files[0])
   }
 
   const onSubmit = async (data) => {
@@ -63,14 +74,17 @@ export default function CreateNewsletter({
 
       setLoading(true)
 
-      const res = await fetch(url, {
-        method: method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      })
+      const formData = new FormData()
+      formData.append('name', data.name)
+      formData.append('body', data.body)
 
-      const jsonRes = await res.json()
-      if (!res.ok) throw new Error(jsonRes.error || 'Something went wrong updating the news letter')
+      if (file) formData.append('file', file)
+
+      const res = await fetch(url, { method: method, body: formData })
+      const text = await res.clone().text()
+
+      if (!res.ok) throw new Error(text || 'Something went wrong updating the news letter')
+      const jsonRes = await res.clone().json()
       onCloseDrawer(jsonRes.body)
 
       toast({
@@ -81,7 +95,7 @@ export default function CreateNewsletter({
       })
     } catch (error) {
       console.error(error)
-      setError(error.message || error)
+      setError(error.message || JSON.stringify(error))
     } finally {
       setLoading(false)
     }
@@ -107,6 +121,8 @@ export default function CreateNewsletter({
       </Box>
 
       <Drawer
+        closeOnEsc={!loading}
+        closeOnOverlayClick={!loading}
         size={'lg'}
         isOpen={isOpen}
         placement="right"
@@ -133,7 +149,9 @@ export default function CreateNewsletter({
                 )}
               </FormControl>
 
-              <FormControl isInvalid={Boolean(errors?.body?.message)}>
+              <FormControl
+                isInvalid={Boolean(errors?.body?.message)}
+                mb={6}>
                 <FormLabel>Body</FormLabel>
                 <Textarea
                   rows={8}
@@ -144,12 +162,32 @@ export default function CreateNewsletter({
                   <FormErrorMessage>{errors.body.message}</FormErrorMessage>
                 )}
               </FormControl>
-{/*
-              <Input
-                placeholder="Select Date and Time"
-                size="md"
-                type="file"
-              /> */}
+
+              {selectedNewsletter?.file && (
+                <>
+                  <p>
+                    <strong>FILE:</strong>
+                  </p>
+
+                  <a
+                    rel="noreferrer"
+                    href={selectedNewsletter.file}
+                    target="_blank">
+                    {selectedNewsletter.file}
+                  </a>
+                </>
+              )}
+
+              {!selectedNewsletter?.file && (
+                <Input
+                  onChange={handleFileChange}
+                  ref={fileInputRef}
+                  placeholder="Attachment"
+                  size="sm"
+                  type="file"
+                  accept="image/png,image/jpg,image/jpeg,application/pdf"
+                />
+              )}
 
               {error && (
                 <Alert status="error">
