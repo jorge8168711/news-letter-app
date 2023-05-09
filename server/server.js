@@ -1,19 +1,19 @@
+require('dotenv').config()
+
 const express = require('express')
 const cors = require('cors')
 const bodyParser = require('body-parser')
 const morgan = require('morgan')
 
 const router = require('./src/network/routes')
-
-const mongoose = require('mongoose')
 const httpStatusCodes = require('./src/httpStatusCodes')
+const db = require('./src/db')
 
 const app = express()
 const port = process.env.PORT || 8000
 
-mongoose.connect(process.env.MONGO_URL)
-  .then((db) => `DB connected successfully to: ${db.connection.host}}}`)
-  .catch((error) => console.error(error))
+// mongodb db connection
+db()
 
 app.use(cors())
 

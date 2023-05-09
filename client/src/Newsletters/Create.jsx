@@ -144,6 +144,12 @@ export default function CreateNewsletter({
                   <FormErrorMessage>{errors.body.message}</FormErrorMessage>
                 )}
               </FormControl>
+{/*
+              <Input
+                placeholder="Select Date and Time"
+                size="md"
+                type="file"
+              /> */}
 
               {error && (
                 <Alert status="error">
