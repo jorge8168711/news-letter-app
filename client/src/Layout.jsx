@@ -31,11 +31,7 @@ export default function Layout() {
         </Container>
       </Card>
 
-      <Container
-        maxW="container.xl"
-        py={6}>
-        <Outlet />
-      </Container>
+      <Outlet />
     </>
   )
 }

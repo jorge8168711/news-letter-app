@@ -5,8 +5,8 @@ import { lazy, Suspense } from 'react'
 import Layout from './Layout'
 import NotFound from './NotFound'
 
-const Subscriptions = lazy(() => import('./Subscriptions'))
-const NewsLetters = lazy(() => import('./NewsLetters'))
+const SubscriptionsPage = lazy(() => import('./Subscriptions/Page'))
+const NewsLetters = lazy(() => import('./Newsletters/Newsletters'))
 
 function App() {
   return (
@@ -39,7 +39,7 @@ function App() {
                   isIndeterminate
                 />
               }>
-              <Subscriptions />
+              <SubscriptionsPage />
             </Suspense>
           }
         />

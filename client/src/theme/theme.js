@@ -25,6 +25,11 @@ const {
   Alert,
   Card,
   Progress,
+  Table,
+  Spinner,
+  Drawer,
+  FormLabel,
+  FormError,
 } = chakraTheme.components
 
 const components = {
@@ -39,6 +44,11 @@ const components = {
   Radio,
   Checkbox,
   Progress,
+  Table,
+  Spinner,
+  Drawer,
+  FormLabel,
+  FormError,
 }
 
 const theme = extendBaseTheme({
