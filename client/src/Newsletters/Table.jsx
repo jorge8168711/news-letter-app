@@ -17,7 +17,8 @@ import ErrorAlert from '../ErrorAlert.jsx'
 import DeleteButton from '../DeleteButton.jsx'
 
 import { API_BASE_URL, fetcher } from '../constants.js'
-import { ArrowForwardIcon, EditIcon } from '@chakra-ui/icons'
+import { EditIcon } from '@chakra-ui/icons'
+import SubmitNewsLetter from './SubmitNewsLetter.jsx'
 
 export default function NewsletterTable({ onTableSelection }) {
   const { data, error, isLoading, mutate } = useSWR(`${API_BASE_URL}/newsletters`, fetcher, {
@@ -79,12 +80,7 @@ export default function NewsletterTable({ onTableSelection }) {
                     id={item.id}
                   />
 
-                  <Button
-                    size="sm"
-                    colorScheme="yellow"
-                    rightIcon={<ArrowForwardIcon />}>
-                    Submit newsletter
-                  </Button>
+                  <SubmitNewsLetter newsletterId={item.id} />
                 </Flex>
               </Td>
             </Tr>

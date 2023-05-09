@@ -19,9 +19,10 @@ router.post('/', async (req, res) => {
 
 router.get('/', async (req, res) => {
   const baseData = { req, res }
+  const onlyCount = req.query.only_count || false
 
   try {
-    const subs = await controller.getSubscriptions()
+    const subs = await controller.getSubscriptions(onlyCount)
     response.success({ ...baseData, body: subs, status: OK })
   } catch (error) {
     const body = error.message || error

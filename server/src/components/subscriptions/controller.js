@@ -23,7 +23,12 @@ async function addSubscription (name, email) {
   return mapSubscription(result)
 }
 
-async function getSubscriptions () {
+async function getSubscriptions (onlyCount = false) {
+  if (onlyCount) {
+    const count = await Model.count()
+    return { count }
+  }
+
   const modelResult = await Model.find()
   return modelResult.map(mapSubscription)
 }
