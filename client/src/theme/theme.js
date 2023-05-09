@@ -30,6 +30,8 @@ const {
   Drawer,
   FormLabel,
   FormError,
+  CloseButton,
+  Textarea,
 } = chakraTheme.components
 
 const components = {
@@ -49,6 +51,8 @@ const components = {
   Drawer,
   FormLabel,
   FormError,
+  CloseButton,
+  Textarea,
 }
 
 const theme = extendBaseTheme({

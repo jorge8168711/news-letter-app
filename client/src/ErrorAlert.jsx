@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import { Alert, AlertDescription, AlertIcon, AlertTitle, Button } from '@chakra-ui/react'
 
 export default function ErrorAlert({ error, onRetry }) {

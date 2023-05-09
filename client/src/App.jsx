@@ -6,7 +6,7 @@ import Layout from './Layout'
 import NotFound from './NotFound'
 
 const SubscriptionsPage = lazy(() => import('./Subscriptions/Page'))
-const NewsLetters = lazy(() => import('./Newsletters/Newsletters'))
+const NewslettersPage = lazy(() => import('./Newsletters/Page'))
 
 function App() {
   return (
@@ -24,7 +24,7 @@ function App() {
                   isIndeterminate
                 />
               }>
-              <NewsLetters />
+              <NewslettersPage />
             </Suspense>
           }
         />
