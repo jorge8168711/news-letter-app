@@ -17,11 +17,20 @@ export default function Layout() {
               fontWeight: isActive ? 'bold' : '',
               opacity: isActive ? '1' : '.75',
             })}>
-            Newsletters
+            Dashboard
           </NavLink>
 
           <NavLink
             to="/newsletters"
+            style={({ isActive }) => ({
+              fontWeight: isActive ? 'bold' : '',
+              opacity: isActive ? '1' : '.75',
+            })}>
+            Newsletters
+          </NavLink>
+
+          <NavLink
+            to="/subscriptions"
             style={({ isActive }) => ({
               fontWeight: isActive ? 'bold' : '',
               opacity: isActive ? '1' : '.75',

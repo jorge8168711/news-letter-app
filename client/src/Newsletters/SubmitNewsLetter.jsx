@@ -62,7 +62,7 @@ export default function SubmitNewsLetter({ newsletterId }) {
       isLoading={loading}
       onClick={sendNewsletter}
       size="sm"
-      colorScheme="yellow"
+      variant='ghost'
       rightIcon={<ArrowForwardIcon />}>
       Submit newsletter
     </Button>

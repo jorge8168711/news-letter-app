@@ -32,6 +32,8 @@ const {
   FormError,
   CloseButton,
   Textarea,
+  Modal,
+  Tag,
 } = chakraTheme.components
 
 const components = {
@@ -53,6 +55,8 @@ const components = {
   FormError,
   CloseButton,
   Textarea,
+  Modal,
+  Tag,
 }
 
 const theme = extendBaseTheme({

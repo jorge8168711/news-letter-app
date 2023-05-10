@@ -79,15 +79,7 @@ export default function CreateSubscription({ afterCloseDrawerCallback }) {
 
   return (
     <div>
-      <Box
-        pb={6}
-        textAlign="right">
-        <Button
-          colorScheme="orange"
-          onClick={onOpen}>
-          Add Email
-        </Button>
-      </Box>
+      <Button onClick={onOpen}>Add Email</Button>
 
       <Drawer
         closeOnEsc={!loading}

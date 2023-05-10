@@ -22,6 +22,21 @@ import {
 import { useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 
+const example = `
+  <h1 style="font-size:24px;margin:0 0 20px 0;font-family:Arial,sans-serif;">
+    Hi check this out
+  </h1>
+  <p style="margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif;">
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit. In tempus adipiscing felis, sit amet blandit ipsum volutpat sed. Morbi porttitor, eget accumsan et dictum, nisi libero ultricies ipsum, posuere neque at erat.
+  </p>
+
+  <p style="margin:0;font-size:16px;line-height:24px;font-family:Arial,sans-serif;">
+    <a href="https://jbarron.dev" style="color:#ee4c50;text-decoration:underline;">
+      jbarron.dev
+    </a>
+  </p>
+`
+
 const defaultValues = {
   name: '',
   body: '',
@@ -45,10 +60,14 @@ export default function CreateNewsletter({
     register,
     reset,
     handleSubmit,
+    watch,
     formState: { errors },
+    setValue,
   } = useForm({
     defaultValues,
   })
+
+  const watchBody = watch('body')
 
   const onCloseDrawer = (createdItem = null) => {
     reset({ defaultValues })
@@ -121,11 +140,7 @@ export default function CreateNewsletter({
       <Box
         pb={6}
         textAlign="right">
-        <Button
-          colorScheme="orange"
-          onClick={onOpen}>
-          Add Newsletter
-        </Button>
+        <Button onClick={onOpen}>Add Newsletter</Button>
       </Box>
 
       <Drawer
@@ -169,6 +184,15 @@ export default function CreateNewsletter({
                 isInvalid={Boolean(errors?.body?.message)}
                 mb={6}>
                 <FormLabel>Body (Edit email content) | HTML, Plaintext</FormLabel>
+
+                <Button
+                  onClick={() => setValue('body', example)}
+                  isDisabled={watchBody?.trim()?.length > 0}
+                  size="xs"
+                  mb={2}>
+                  Insert an example
+                </Button>
+
                 <Textarea
                   rows={8}
                   type="text"
