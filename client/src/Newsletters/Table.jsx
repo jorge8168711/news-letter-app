@@ -1,15 +1,4 @@
-import {
-  Button,
-  Flex,
-  IconButton,
-  Table,
-  TableContainer,
-  Tbody,
-  Td,
-  Th,
-  Thead,
-  Tr,
-} from '@chakra-ui/react'
+import { Flex, IconButton, Table, TableContainer, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react'
 
 import useSWR from 'swr'
 import Loader from '../Loader.jsx'
@@ -45,6 +34,7 @@ export default function NewsletterTable({ onTableSelection }) {
         <Thead>
           <Tr bgColor="rgba(255, 255, 255, .1)">
             <Th>Name</Th>
+            <Th>Subject</Th>
             <Th />
           </Tr>
         </Thead>
@@ -61,6 +51,7 @@ export default function NewsletterTable({ onTableSelection }) {
           {data?.body?.map((item) => (
             <Tr key={item.id}>
               <Td>{item.name}</Td>
+              <Td>{item.subject}</Td>
 
               <Td>
                 <Flex

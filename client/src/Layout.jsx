@@ -26,7 +26,7 @@ export default function Layout() {
               fontWeight: isActive ? 'bold' : '',
               opacity: isActive ? '1' : '.75',
             })}>
-            Subscriptions
+            Emails
           </NavLink>
         </Container>
       </Card>

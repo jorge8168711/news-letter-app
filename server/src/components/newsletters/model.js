@@ -7,6 +7,9 @@ const NewsletterSchema = new Schema({
     type: String,
     required: [true, 'A name is required']
   },
+  subject: {
+    type: String
+  },
   body: {
     type: String,
     required: [true, 'A name is required']

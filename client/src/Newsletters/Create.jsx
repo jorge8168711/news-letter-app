@@ -1,3 +1,4 @@
+import { ExternalLinkIcon } from '@chakra-ui/icons'
 import {
   Alert,
   AlertIcon,
@@ -13,6 +14,7 @@ import {
   FormErrorMessage,
   FormLabel,
   Input,
+  Link,
   Textarea,
   useDisclosure,
   useToast,
@@ -23,6 +25,7 @@ import { useForm } from 'react-hook-form'
 const defaultValues = {
   name: '',
   body: '',
+  subject: '',
 }
 
 export default function CreateNewsletter({
@@ -77,6 +80,7 @@ export default function CreateNewsletter({
       const formData = new FormData()
       formData.append('name', data.name)
       formData.append('body', data.body)
+      formData.append('subject', data.subject)
 
       if (file) formData.append('file', file)
 
@@ -104,7 +108,11 @@ export default function CreateNewsletter({
   useEffect(() => {
     if (!isOpen && selectedNewsletter) {
       onOpen()
-      reset({ name: selectedNewsletter.name, body: selectedNewsletter.body })
+      reset({
+        name: selectedNewsletter.name,
+        body: selectedNewsletter.body,
+        subject: selectedNewsletter.subject,
+      })
     }
   }, [isOpen, selectedNewsletter, onOpen, reset])
 
@@ -149,10 +157,18 @@ export default function CreateNewsletter({
                 )}
               </FormControl>
 
+              <FormControl mb={6}>
+                <FormLabel>Subject</FormLabel>
+                <Input
+                  type="text"
+                  {...register('subject')}
+                />
+              </FormControl>
+
               <FormControl
                 isInvalid={Boolean(errors?.body?.message)}
                 mb={6}>
-                <FormLabel>Body</FormLabel>
+                <FormLabel>Body (Edit email content) | HTML, Plaintext</FormLabel>
                 <Textarea
                   rows={8}
                   type="text"
@@ -165,16 +181,11 @@ export default function CreateNewsletter({
 
               {selectedNewsletter?.file && (
                 <>
-                  <p>
-                    <strong>FILE:</strong>
-                  </p>
-
-                  <a
-                    rel="noreferrer"
+                  <Link
                     href={selectedNewsletter.file}
-                    target="_blank">
-                    {selectedNewsletter.file}
-                  </a>
+                    isExternal>
+                    Attachment <ExternalLinkIcon mx="2px" />
+                  </Link>
                 </>
               )}
 

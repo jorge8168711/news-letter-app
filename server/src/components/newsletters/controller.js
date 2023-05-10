@@ -14,8 +14,8 @@ async function existInDB (id) {
 
 function mapNewsletter (newsletter) {
   if (!newsletter) return null
-  const { _id: id, name, body, created, file } = newsletter
-  return { id, body, name, created, file }
+  const { _id: id, name, body, created, file, subject } = newsletter
+  return { id, body, name, created, file, subject }
 }
 
 async function addNewsletter (payload) {
@@ -36,8 +36,8 @@ async function getNewsLetterById (id) {
 
 async function updateNewsLetter (id, payload = {}) {
   const modelResult = await Model.findOneAndUpdate({ _id: id }, payload, { new: true })
-  await modelResult.save()
-  return mapNewsletter(modelResult)
+  const result = await modelResult.save()
+  return mapNewsletter(result)
 }
 
 async function deleteNewsLetter (id) {
@@ -47,7 +47,7 @@ async function deleteNewsLetter (id) {
 
   // delete s3 object
   await s3.send(new DeleteObjectCommand({
-    Bucket: process.env.S3_BUCKET_NAME || 'newsletter-s3-bucket',
+    Bucket: process.env.S3_BUCKET_NAME,
     Key: doc.file_key
   }))
 
