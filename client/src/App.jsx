@@ -5,6 +5,7 @@ import { lazy, Suspense } from 'react'
 import Layout from './Layout'
 import NotFound from './NotFound'
 
+const Unsubscribe = lazy(() => import('./Unsubscribe'))
 const SubscriptionsPage = lazy(() => import('./Subscriptions/Page'))
 const NewslettersPage = lazy(() => import('./Newsletters/Page'))
 
@@ -40,6 +41,21 @@ function App() {
                 />
               }>
               <SubscriptionsPage />
+            </Suspense>
+          }
+        />
+
+        <Route
+          path="unsubscribe"
+          element={
+            <Suspense
+              fallback={
+                <Progress
+                  size="sm"
+                  isIndeterminate
+                />
+              }>
+              <Unsubscribe />
             </Suspense>
           }
         />

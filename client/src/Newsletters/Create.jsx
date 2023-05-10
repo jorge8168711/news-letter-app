@@ -1,3 +1,4 @@
+import { ExternalLinkIcon } from '@chakra-ui/icons'
 import {
   Alert,
   AlertIcon,
@@ -13,16 +14,18 @@ import {
   FormErrorMessage,
   FormLabel,
   Input,
+  Link,
   Textarea,
   useDisclosure,
   useToast,
 } from '@chakra-ui/react'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 
 const defaultValues = {
   name: '',
   body: '',
+  subject: '',
 }
 
 export default function CreateNewsletter({
@@ -31,9 +34,12 @@ export default function CreateNewsletter({
   selectedNewsletter,
 }) {
   const { isOpen, onOpen, onClose } = useDisclosure()
+  const toast = useToast()
+  const fileInputRef = useRef(null)
+
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
-  const toast = useToast()
+  const [file, setFile] = useState(null)
 
   const {
     register,
@@ -51,6 +57,14 @@ export default function CreateNewsletter({
     if (createdItem) {
       afterCloseDrawerCallback?.(createdItem)
     }
+
+    if (fileInputRef.current) {
+      fileInputRef.current.value = null
+    }
+  }
+
+  const handleFileChange = (e) => {
+    setFile(e.target.files[0])
   }
 
   const onSubmit = async (data) => {
@@ -63,14 +77,18 @@ export default function CreateNewsletter({
 
       setLoading(true)
 
-      const res = await fetch(url, {
-        method: method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      })
+      const formData = new FormData()
+      formData.append('name', data.name)
+      formData.append('body', data.body)
+      formData.append('subject', data.subject)
 
-      const jsonRes = await res.json()
-      if (!res.ok) throw new Error(jsonRes.error || 'Something went wrong updating the news letter')
+      if (file) formData.append('file', file)
+
+      const res = await fetch(url, { method: method, body: formData })
+      const text = await res.clone().text()
+
+      if (!res.ok) throw new Error(text || 'Something went wrong updating the news letter')
+      const jsonRes = await res.clone().json()
       onCloseDrawer(jsonRes.body)
 
       toast({
@@ -81,7 +99,7 @@ export default function CreateNewsletter({
       })
     } catch (error) {
       console.error(error)
-      setError(error.message || error)
+      setError(error.message || JSON.stringify(error))
     } finally {
       setLoading(false)
     }
@@ -90,7 +108,11 @@ export default function CreateNewsletter({
   useEffect(() => {
     if (!isOpen && selectedNewsletter) {
       onOpen()
-      reset({ name: selectedNewsletter.name, body: selectedNewsletter.body })
+      reset({
+        name: selectedNewsletter.name,
+        body: selectedNewsletter.body,
+        subject: selectedNewsletter.subject,
+      })
     }
   }, [isOpen, selectedNewsletter, onOpen, reset])
 
@@ -107,6 +129,8 @@ export default function CreateNewsletter({
       </Box>
 
       <Drawer
+        closeOnEsc={!loading}
+        closeOnOverlayClick={!loading}
         size={'lg'}
         isOpen={isOpen}
         placement="right"
@@ -133,8 +157,18 @@ export default function CreateNewsletter({
                 )}
               </FormControl>
 
-              <FormControl isInvalid={Boolean(errors?.body?.message)}>
-                <FormLabel>Body</FormLabel>
+              <FormControl mb={6}>
+                <FormLabel>Subject</FormLabel>
+                <Input
+                  type="text"
+                  {...register('subject')}
+                />
+              </FormControl>
+
+              <FormControl
+                isInvalid={Boolean(errors?.body?.message)}
+                mb={6}>
+                <FormLabel>Body (Edit email content) | HTML, Plaintext</FormLabel>
                 <Textarea
                   rows={8}
                   type="text"
@@ -144,12 +178,27 @@ export default function CreateNewsletter({
                   <FormErrorMessage>{errors.body.message}</FormErrorMessage>
                 )}
               </FormControl>
-{/*
-              <Input
-                placeholder="Select Date and Time"
-                size="md"
-                type="file"
-              /> */}
+
+              {selectedNewsletter?.file && (
+                <>
+                  <Link
+                    href={selectedNewsletter.file}
+                    isExternal>
+                    Attachment <ExternalLinkIcon mx="2px" />
+                  </Link>
+                </>
+              )}
+
+              {!selectedNewsletter?.file && (
+                <Input
+                  onChange={handleFileChange}
+                  ref={fileInputRef}
+                  placeholder="Attachment"
+                  size="sm"
+                  type="file"
+                  accept="image/png,image/jpg,image/jpeg,application/pdf"
+                />
+              )}
 
               {error && (
                 <Alert status="error">

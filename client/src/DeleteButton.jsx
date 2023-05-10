@@ -10,7 +10,9 @@ export default function DeleteButton({ id, url, onDeleteSuccess }) {
   const deleteItem = async () => {
     try {
       setLoading(true)
-      await fetch(`${API_BASE_URL}/${url}/${id}`, { method: 'DELETE' })
+      const res = await fetch(`${API_BASE_URL}/${url}/${id}`, { method: 'DELETE' })
+
+      if (!res.ok) throw new Error('Something went wrong')
 
       toast({
         title: 'Element deleted successfully.',

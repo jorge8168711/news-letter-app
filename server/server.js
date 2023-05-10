@@ -10,7 +10,7 @@ const httpStatusCodes = require('./src/httpStatusCodes')
 const db = require('./src/db')
 
 const app = express()
-const port = process.env.PORT || 8000
+const port = process.env.SERVER_PORT || 8000
 
 // mongodb db connection
 db()

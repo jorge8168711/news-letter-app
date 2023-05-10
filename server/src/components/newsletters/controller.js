@@ -1,4 +1,6 @@
+const { DeleteObjectCommand } = require('@aws-sdk/client-s3')
 const Model = require('./model')
+const { s3 } = require('./s3Upload')
 
 async function existInDB (id) {
   try {
@@ -12,8 +14,8 @@ async function existInDB (id) {
 
 function mapNewsletter (newsletter) {
   if (!newsletter) return null
-  const { _id: id, name, body, created } = newsletter
-  return { id, body, name, created }
+  const { _id: id, name, body, created, file, subject } = newsletter
+  return { id, body, name, created, file, subject }
 }
 
 async function addNewsletter (payload) {
@@ -34,14 +36,23 @@ async function getNewsLetterById (id) {
 
 async function updateNewsLetter (id, payload = {}) {
   const modelResult = await Model.findOneAndUpdate({ _id: id }, payload, { new: true })
-  await modelResult.save()
-  return mapNewsletter(modelResult)
+  const result = await modelResult.save()
+  return mapNewsletter(result)
 }
 
 async function deleteNewsLetter (id) {
   const exist = await existInDB(id)
   if (!exist) return null
+  const doc = await Model.findOne({ _id: id })
+
+  // delete s3 object
+  await s3.send(new DeleteObjectCommand({
+    Bucket: process.env.S3_BUCKET_NAME,
+    Key: doc.file_key
+  }))
+
   await Model.deleteOne({ _id: id })
+
   return id
 }
 
@@ -50,5 +61,6 @@ module.exports = {
   getNewsLetters,
   getNewsLetterById,
   deleteNewsLetter,
-  updateNewsLetter
+  updateNewsLetter,
+  mapNewsletter
 }

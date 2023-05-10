@@ -20,19 +20,18 @@ services:
     build:
       context: ./server
       dockerfile: Dockerfile.dev
-    environment:
-      MONGO_URL: "mongodb://dev-mongo/newsletter"
-      PORT: 8000
+    env_file:
+      - .env
     ports:
       - "8000:8000"
     depends_on:
-      - dev-mongo
+      - mongo
     volumes:
       - ./server:/app
       - /app/node_modules
 
-  dev-mongo:
-    container_name: dev-mongo
+  mongo:
+    container_name: mongo
     image: mongo
     restart: always
     ports:

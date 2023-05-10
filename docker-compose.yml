@@ -27,9 +27,8 @@ services:
     build:
       context: ./server
       dockerfile: Dockerfile
-    environment:
-      MONGO_URL: "mongodb://mongo/newsletter"
-      PORT: 8000
+    env_file:
+      - .env
     ports:
       - "8000:8000"
     depends_on:
