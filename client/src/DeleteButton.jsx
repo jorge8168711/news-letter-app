@@ -40,6 +40,7 @@ export default function DeleteButton({ id, url, onDeleteSuccess }) {
       onClick={deleteItem}
       isLoading={loading}
       colorScheme="red"
+      variant="outline"
       size="sm"
       icon={<DeleteIcon />}
     />

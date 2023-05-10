@@ -57,11 +57,12 @@ export default function NewsletterTable({ onTableSelection }) {
                 <Flex
                   justifyContent="flex-end"
                   alignItems="center"
-                  gap={2}>
+                  gap={4}>
                   <IconButton
                     onClick={() => onTableSelection?.(item)}
                     colorScheme="blue"
                     size="sm"
+                    variant="outline"
                     icon={<EditIcon />}
                   />
 

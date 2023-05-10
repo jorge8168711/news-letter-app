@@ -8,6 +8,7 @@ import NotFound from './NotFound'
 const Unsubscribe = lazy(() => import('./Unsubscribe'))
 const SubscriptionsPage = lazy(() => import('./Subscriptions/Page'))
 const NewslettersPage = lazy(() => import('./Newsletters/Page'))
+const DashboardPage = lazy(() => import('./Dashboard/Page'))
 
 function App() {
   return (
@@ -25,13 +26,28 @@ function App() {
                   isIndeterminate
                 />
               }>
+              <DashboardPage />
+            </Suspense>
+          }
+        />
+
+        <Route
+          path='/newsletters'
+          element={
+            <Suspense
+              fallback={
+                <Progress
+                  size="sm"
+                  isIndeterminate
+                />
+              }>
               <NewslettersPage />
             </Suspense>
           }
         />
 
         <Route
-          path="newsletters"
+          path="/subscriptions"
           element={
             <Suspense
               fallback={
