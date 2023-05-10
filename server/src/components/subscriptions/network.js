@@ -1,8 +1,11 @@
 const express = require('express')
 const response = require('../../network/response')
 const controller = require('./controller')
+const multer = require('multer')
+const os = require('os')
 const { CREATED, BAD_REQUEST, OK, NOT_FOUND } = require('../../httpStatusCodes')
 
+const upload = multer({ dest: os.tmpdir() })
 const router = express.Router()
 
 router.post('/', async (req, res) => {
@@ -11,6 +14,18 @@ router.post('/', async (req, res) => {
   try {
     const createdSub = await controller.addSubscription(req.body.name, req.body.email)
     response.success({ ...baseData, body: createdSub, status: CREATED })
+  } catch (error) {
+    const body = error.message || error
+    response.error({ ...baseData, body, status: BAD_REQUEST, error })
+  }
+})
+
+router.post('/bulk/', upload.single('file'), async (req, res) => {
+  const baseData = { req, res }
+
+  try {
+    const createdSubs = await controller.addSubscriptionsBulk(req.file.path)
+    response.success({ ...baseData, body: createdSubs, status: CREATED })
   } catch (error) {
     const body = error.message || error
     response.error({ ...baseData, body, status: BAD_REQUEST, error })

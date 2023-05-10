@@ -140,11 +140,7 @@ export default function CreateNewsletter({
       <Box
         pb={6}
         textAlign="right">
-        <Button
-          colorScheme="orange"
-          onClick={onOpen}>
-          Add Newsletter
-        </Button>
+        <Button onClick={onOpen}>Add Newsletter</Button>
       </Box>
 
       <Drawer
