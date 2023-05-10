@@ -5,23 +5,6 @@ const nodemailer = require('nodemailer')
 
 const { mapNewsletter } = require('../newsletters/controller')
 const buildEmail = require('./buildEmail')
-// const { SecretsManagerClient, GetSecretValueCommand } = require('@aws-sdk/client-secrets-manager')
-
-// const client = new SecretsManagerClient({ region: process.env.S3_BUCKET_REGION })
-
-// const getSecrets = async () => {
-//   let response = null
-
-//   try {
-//     response = await client.send(
-//       new GetSecretValueCommand({ SecretId: 'gmail-mailer', VersionStage: 'AWSCURRENT' })
-//     )
-//   } catch (error) {
-//     console.log(error)
-//   }
-
-//   return response
-// }
 
 function mapEmail (email) {
   if (!email) return null

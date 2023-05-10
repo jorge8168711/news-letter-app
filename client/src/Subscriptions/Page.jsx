@@ -6,6 +6,7 @@ import { Container, Flex } from '@chakra-ui/react'
 
 export default function SubscriptionsPage() {
   const [tableKey, setTableKey] = useState(new Date().getTime())
+  const updateTable = () => setTableKey(new Date().getTime())
 
   return (
     <>
@@ -17,8 +18,8 @@ export default function SubscriptionsPage() {
           mb={8}
           alignItems="flex-start"
           justifyContent="flex-end">
-          <UploadCsv />
-          <CreateSubscription afterCloseDrawerCallback={() => setTableKey(new Date().getTime())} />
+          <UploadCsv onFinish={updateTable} />
+          <CreateSubscription afterCloseDrawerCallback={updateTable} />
         </Flex>
 
         <SubscriptionsTable key={tableKey} />
