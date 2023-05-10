@@ -22,7 +22,7 @@ import {
 } from '@chakra-ui/react'
 import UploadCsvTableResult from './UploadCsvTableResult'
 
-export default function UploadCsv() {
+export default function UploadCsv({ onFinish }) {
   const inputRef = useRef(null)
   const toast = useToast()
   const [loading, setLoading] = useState(false)
@@ -65,6 +65,7 @@ export default function UploadCsv() {
 
       const jsonResponse = await res.clone().json()
       setResult(jsonResponse.body)
+      onFinish()
       onOpen()
       e.target.value = null
     } catch (error) {
